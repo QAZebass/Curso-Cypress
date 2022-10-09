@@ -9,8 +9,8 @@ import {ShoppingCart} from '../../../support/Pages/ShoppingCart'
 
 describe('Proyecto final',()=>{
 
-    let credenciales;
-    let infoproductos;
+    let credentials;
+    let productInfo;
     const registerpage= new RegisterPage();
     const loginpage= new LoginPage();
     const homepage= new HomePage();
@@ -21,11 +21,11 @@ describe('Proyecto final',()=>{
     before('Preconditions',()=>{
 
         cy.fixture('DatosUsuario').then(credencial=>{
-              credenciales=credencial
+              credentials=credencial;
         })
 
-        cy.fixture('productos_precios').then(productosPrecio=>{
-              infoproductos= productosPrecio
+        cy.fixture('productos_precios').then(productprice=>{
+              productInfo= productprice;
         })
         
         cy.visit('/');  
@@ -35,35 +35,35 @@ describe('Proyecto final',()=>{
         
         registerpage.GotoLogin();
         
-        loginpage.TypeUser(credenciales.usuario);
-        loginpage.TypePass(credenciales.contraseña);
+        loginpage.TypeUser(credentials.user);
+        loginpage.TypePass(credentials.password);
         loginpage.LogIn();
 
         homepage.GoShopping();
 
-        productspage.Purchase(infoproductos.ProductOne);
-        productspage.Purchase(infoproductos.ProductTwo);
+        productspage.Purchase(productInfo.ProductOne);
+        productspage.Purchase(productInfo.ProductTwo);
 
         productspage.GotoShoppingCart();
 
-        shoppingcart.CheckProductandPrice(infoproductos.ProductOne, infoproductos.PriceOne)
-        .should('include.text', infoproductos.PriceOne);
+        shoppingcart.CheckProductandPrice(productInfo.ProductOne, productInfo.PriceOne)
+        .should('include.text', productInfo.PriceOne);
 
-        shoppingcart.CheckProductandPrice(infoproductos.ProductTwo, infoproductos.PriceTwo)
+        shoppingcart.CheckProductandPrice(productInfo.ProductTwo, productInfo.PriceTwo)
         .invoke('text')
         .should(precio=>{
-            expect(precio).includes(infoproductos.PriceTwo);
+            expect(precio).includes(productInfo.PriceTwo);
         })
         
 
 
         shoppingcart.ClickShowPrice();
 
-        shoppingcart.CheckPriceResult(infoproductos.PriceOne+infoproductos.PriceTwo)
+        shoppingcart.CheckPriceResult(productInfo.PriceOne+productInfo.PriceTwo)
         .invoke('text')
         .should(total=>{
           expect(total)
-        .include(infoproductos.PriceOne+infoproductos.PriceTwo)
+        .include(productInfo.PriceOne+productInfo.PriceTwo)
         })
 
     })
