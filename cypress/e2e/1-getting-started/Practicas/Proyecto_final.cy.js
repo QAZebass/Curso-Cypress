@@ -7,7 +7,7 @@ import {ProductsPage} from '../../../support/Pages/ProductsPage'
 import {ShoppingCart} from '../../../support/Pages/ShoppingCart'
 
 
-describe('Proyecto final',()=>{
+describe('Page Object Model',()=>{
 
     let credentials;
     let productInfo;
