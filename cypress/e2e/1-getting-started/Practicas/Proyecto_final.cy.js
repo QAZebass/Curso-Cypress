@@ -46,24 +46,16 @@ describe('Proyecto final',()=>{
 
         productspage.GotoShoppingCart();
 
-        shoppingcart.CheckProduct(infoproductos.ProductOne)
-        .should('include.text', infoproductos.ProductOne);
+        shoppingcart.CheckProductandPrice(infoproductos.ProductOne, infoproductos.PriceOne)
+        .should('include.text', infoproductos.PriceOne);
 
-        shoppingcart.CheckProduct(infoproductos.ProductTwo)
+        shoppingcart.CheckProductandPrice(infoproductos.ProductTwo, infoproductos.PriceTwo)
         .invoke('text')
-        .then(producto=>{
-            expect(producto).includes(infoproductos.ProductTwo);
+        .should(precio=>{
+            expect(precio).includes(infoproductos.PriceTwo);
         })
+        
 
-
-        shoppingcart.CheckPrice(infoproductos.PriceOne)
-        .should('include.text', infoproductos.PriceOne)
-
-        shoppingcart.CheckPrice(infoproductos.PriceTwo)
-        .invoke('text')
-        .then(precio=>{
-             assert.include(precio, infoproductos.PriceTwo)
-        })
 
         shoppingcart.ClickShowPrice();
 

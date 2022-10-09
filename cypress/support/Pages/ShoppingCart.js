@@ -4,18 +4,14 @@ export class ShoppingCart {
 
         this.ShowPricebutton= '//button[text()="Show total price"]';
         
-
     }
 
 
-    CheckProduct(product){
-         return cy.get(`[name="${product}"]`);
-
+    CheckProductandPrice(product, price){
+         return cy.get(`[name="${product}"]`)
+         .siblings(`[name="${price}"]`);
     }
 
-    CheckPrice(price){
-         return cy.get(`[name="${price}"]`);
-    }
 
     ClickShowPrice(){
         cy.xpath(this.ShowPricebutton).click();
