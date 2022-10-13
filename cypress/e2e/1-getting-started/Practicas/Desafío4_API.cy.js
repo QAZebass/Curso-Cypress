@@ -24,6 +24,7 @@ describe('Challenge 4/ API Testing',()=>{
         }).then(response=>{
             cy.log(response);
             expect(response.body.newUser.username).equal(user);
+            assert.equal(response.status, 200)
             
         }).then(response=>{
             cy.request({
@@ -35,7 +36,8 @@ describe('Challenge 4/ API Testing',()=>{
                 }
             }).then(response=>{
                 cy.log(response);
-                assert.equal(response.body.user.username, user)
+                assert.equal(response.body.user.username, user);
+                expect(response.status).equal(200);
             
             }).then(response=>{
                 cy.request({
