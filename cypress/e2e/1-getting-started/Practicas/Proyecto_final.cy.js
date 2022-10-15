@@ -31,7 +31,7 @@ describe('Page Object Model',()=>{
         cy.visit('/');  
     })
 
-    it('Log In, Purchase and Price Checking',()=>{
+    it('Log In, Purchase and Product and Price Checking',()=>{
         
         registerpage.GotoLogin();
         
