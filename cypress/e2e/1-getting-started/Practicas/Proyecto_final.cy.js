@@ -46,14 +46,24 @@ describe('Page Object Model',()=>{
 
         productspage.GotoShoppingCart();
 
-        shoppingcart.CheckProductandPrice(productInfo.ProductOne, productInfo.PriceOne)
-        .should('include.text', productInfo.PriceOne);
-
-        shoppingcart.CheckProductandPrice(productInfo.ProductTwo, productInfo.PriceTwo)
+        shoppingcart.CheckProduct(productInfo.PriceOne, productInfo.ProductOne)
         .invoke('text')
-        .should(precio=>{
-            expect(precio).includes(productInfo.PriceTwo);
+        .should(product=>{
+            assert.include(product, productInfo.ProductOne)
         })
+
+        shoppingcart.CheckProduct(productInfo.PriceTwo, productInfo.ProductTwo)
+        .invoke('text')
+        .should(product=>{
+            expect(product)
+            .includes(product, productInfo.ProductTwo)
+        })
+
+       shoppingcart.CheckPrice(productInfo.ProductOne, productInfo.PriceOne)
+       .should('include.text', productInfo.PriceOne)
+
+       shoppingcart.CheckPrice(productInfo.ProductTwo, productInfo.PriceTwo)
+       .should('include.text', productInfo.PriceTwo)
         
 
 

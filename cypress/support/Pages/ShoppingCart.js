@@ -6,8 +6,12 @@ export class ShoppingCart {
         
     }
 
+    CheckProduct(price, product){
+        return cy.xpath(`//p[@name="${price}"]//preceding-sibling::p[@name="${product}"]`)
+    }
 
-    CheckProductandPrice(product, price){
+
+    CheckPrice(product, price){
          return cy.get(`[name="${product}"]`)
          .siblings(`[name="${price}"]`);
     }
