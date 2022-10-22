@@ -3,6 +3,7 @@ export class ShoppingCart {
     constructor(){
 
         this.ShowPricebutton= '//button[text()="Show total price"]';
+        this.checkoutbutton= '//button[text()="Go to Checkout"]';
         
     }
 
@@ -23,6 +24,9 @@ export class ShoppingCart {
 
     CheckPriceResult(suma){
         return cy.contains(`${suma}`)
-
     } 
+
+    GotoCheckout(){
+        cy.xpath(this.checkoutbutton).click();
+    }
 }

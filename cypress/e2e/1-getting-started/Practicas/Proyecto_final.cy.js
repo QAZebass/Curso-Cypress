@@ -1,43 +1,77 @@
 /// <reference types="cypress" />
 
-import {RegisterPage} from '../../../support/Pages/RegisterPage'
-import {LoginPage} from '../../../support/Pages/LoginPage'
+import {CheckoutPage} from '../../../support/Pages/CheckoutPage'
 import {HomePage} from '../../../support/Pages/HomePage'
 import {ProductsPage} from '../../../support/Pages/ProductsPage'
+import {Receipt} from '../../../support/Pages/Receipt'
 import {ShoppingCart} from '../../../support/Pages/ShoppingCart'
+
 
 
 describe('Page Object Model',()=>{
 
-    let credentials;
+    let checkout
     let productInfo;
-    const registerpage= new RegisterPage();
-    const loginpage= new LoginPage();
+    const user= "ZebassZender";
+    const pass= "123456!";
+    const sex= "male";
+    const day= 21;
+    const month= "June";
+    const year= 1985;
     const homepage= new HomePage();
     const productspage= new ProductsPage();
     const shoppingcart= new ShoppingCart(); 
- 
+    const checkoutpage= new CheckoutPage();
+    const receipt= new Receipt(); 
 
     before('Preconditions',()=>{
 
-        cy.fixture('DatosUsuario').then(credencial=>{
-              credentials=credencial;
+        cy.fixture('Checkout').then(data=>{
+              checkout =data;
         })
 
         cy.fixture('productos_precios').then(productprice=>{
               productInfo= productprice;
         })
         
-        cy.visit('/');  
+        cy.request({
+            url: 'https://pushing-it-backend.herokuapp.com/api/register',
+            method: 'POST',
+            body: {
+                username: user,
+                password: pass,
+                gender: sex,
+                day: day,
+                month: month,
+                year:year,
+            }
+        })
+        
+        cy.request({
+            url: 'https://pushing-it-backend.herokuapp.com/api/login',
+            method: 'POST',
+            body:{
+                username: user,
+                password: pass
+            }
+        }).then(response=>{
+            cy.log(response)
+            window.localStorage.setItem('token',response.body.token);
+            window.localStorage.setItem('user', response.body.user.username)
+        })
+        cy.visit('/'); 
+    })    
+    
+    after('Deleting User',()=>{
+            cy.request({
+                url: `https://pushing-it-backend.herokuapp.com/api/deleteuser/${user}`,
+                method: "DELETE"
+            })
     })
+        
 
     it('Log In, Purchase and Product and Price Checking',()=>{
         
-        registerpage.GotoLogin();
-        
-        loginpage.TypeUser(credentials.user);
-        loginpage.TypePass(credentials.password);
-        loginpage.LogIn();
 
         homepage.GoShopping();
 
@@ -76,6 +110,41 @@ describe('Page Object Model',()=>{
         .include(productInfo.PriceOne+productInfo.PriceTwo)
         })
 
+        shoppingcart.GotoCheckout();
+
+        checkoutpage.NameInput(checkout.name);
+        checkoutpage.SurnameInput(checkout.surname);
+        checkoutpage.CardNumber(checkout.creditcard);
+        checkoutpage.CompletePurchase();
+
+        receipt.CheckName(checkout.name)
+        .should('includes.text', checkout.name);
+
+        receipt.CheckName(checkout.surname)
+        .should('includes.text', checkout.surname);
+
+        receipt.CheckProduct(productInfo.ProductOne)
+        .invoke('text')
+        .should(info=>{
+            expect(info).equal(productInfo.ProductOne)
+        })
+
+        receipt.CheckProduct(productInfo.ProductTwo)
+        .invoke('text')
+        .should(info=>{
+            assert.equal(info, productInfo.ProductTwo)
+        })
+
+        receipt.CheckCreditcard(checkout.creditcard)
+        .should('have.text', checkout.creditcard)
+
+        receipt.CheckTotal()
+        .invoke('text')
+        .should(total=>{
+            assert.include(total, productInfo.PriceOne+productInfo.PriceTwo)
+        })
+
+        receipt.Thankyou();
     })
 
 })
